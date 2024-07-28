@@ -1,0 +1,13 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: EnvironmentConfig
+metadata:
+  name: cluster
+data:
+  awsAccountID: "${awsAccountID}"
+  eksOIDC: ${eksOIDC}
+  vpcID: ${vpcID}
+  region: ${region}
+  clusterName: ${clusterName}
+  roleArn: ${roleArn}
+  bucketName: ${bucketName}
+ 

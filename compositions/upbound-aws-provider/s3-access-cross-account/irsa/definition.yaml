@@ -1,0 +1,48 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xirsascrossaccount.awsblueprints.io
+spec:
+  claimNames:
+    kind: IRSACROSSACCOUNT
+    plural: irsas
+  group: awsblueprints.io
+  names:
+    kind: XIRSACROSSACCOUNT
+    plural: xirsascrossaccount
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          description: IRSA is the Schema for the irsas API
+          properties:
+            spec:
+              description: IRSASpec defines the desired state of IRSA
+              properties:
+                resourceConfig:
+                  description: ResourceConfig defines general properties of this AWS
+                    resource.
+                  properties:
+                    providerConfigName:
+                      type: string
+                  required:
+                  - providerConfigName
+                  type: object
+                serviceAccountName:
+                  type: string
+              required:
+              - serviceAccountName
+              - resourceConfig
+              type: object
+            status:
+              description: IRSAStatus defines the observed state of IRSA
+              properties:
+                roleArn:
+                  type: string
+              type: object
+          type: object
