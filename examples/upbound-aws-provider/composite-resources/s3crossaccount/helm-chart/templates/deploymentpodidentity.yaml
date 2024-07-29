@@ -2,24 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   rollme: {{ randAlphaNum 5 | quote }}
-  name: irsa-pod
-  labels:
-    app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
-    helm.sh/chart: {{ include "s3-access-app.chart" . }}
+  name: podidentity-pod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
+      app.kubernetes.io/name: podidentity
   template:
     metadata:
       annotations:
         rollme: {{ randAlphaNum 5 | quote }}
       labels:
-        app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
+        app.kubernetes.io/name: podidentity
     spec:
-      
-      serviceAccountName: {{ include "s3-access-app.name" . }}
+      serviceAccountName: s3-access-podidentity
       containers:
       - name: aws-cli
         image: amazon/aws-cli:latest
@@ -27,8 +23,8 @@ spec:
         args:
           - "-c"
           - |
-            echo "This is a test file" > test.txt
-            aws s3 cp test.txt s3://satish-irsa-podidentity1/
+            echo "This is a test file" > testpodidentity.txt
+            aws s3 cp testpodidentity.txt s3://satish-irsa-podidentity1/
             while true; do aws s3 ls s3://satish-irsa-podidentity1/; sleep 120; done
         resources:
           requests:
@@ -37,10 +33,4 @@ spec:
           limits:
             memory: "64Mi"
             cpu: "250m"
-        # env:
-        # - name: BUCKET_NAME
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: {{ include "s3-access-app.name" . }}
-        #       key: bucketName
       restartPolicy: Always
