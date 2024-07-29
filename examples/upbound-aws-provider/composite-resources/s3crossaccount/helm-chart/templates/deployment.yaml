@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   rollme: {{ randAlphaNum 5 | quote }}
-  name: {{ include "s3-access-app.name" . }}
+  name: irsa-pod
   labels:
     app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
     helm.sh/chart: {{ include "s3-access-app.chart" . }}
@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
     spec:
-      name: irsa-pod
+      
       serviceAccountName: {{ include "s3-access-app.name" . }}
       containers:
       - name: aws-cli
