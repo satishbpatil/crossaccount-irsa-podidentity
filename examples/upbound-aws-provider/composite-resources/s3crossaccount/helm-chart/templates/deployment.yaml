@@ -44,3 +44,40 @@ spec:
         #       name: {{ include "s3-access-app.name" . }}
         #       key: bucketName
       restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  rollme: {{ randAlphaNum 5 | quote }}
+  name: podidentity-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: podidentity
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app.kubernetes.io/name: podidentity
+    spec:
+      serviceAccountName: s3-access-podidentity
+      containers:
+      - name: aws-cli
+        image: amazon/aws-cli:latest
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo "This is a test file" > testpodidentity.txt
+            aws s3 cp testpodidentity.txt s3://satish-irsa-podidentity1/
+            while true; do aws s3 ls s3://satish-irsa-podidentity1/; sleep 120; done
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "64Mi"
+            cpu: "250m"
+      restartPolicy: Always
