@@ -27,8 +27,8 @@ resource "aws_s3_bucket" "sandbox" {
   provider = aws.sandbox
 }
 
-resource "aws_iam_role" "satish-irsa-podidentity" {
-  name = "satish-irsa-podidentity"
+resource "aws_iam_role" "satish-irsa" {
+  name = "satish-irsa"
   provider = aws.sandbox
   managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   # Terraform's "jsonencode" function converts a
@@ -55,6 +55,36 @@ resource "aws_iam_role" "satish-irsa-podidentity" {
   })
 
 }
+
+resource "aws_iam_role" "satish-podidentity" {
+  name = "satish-podidentity"
+  provider = aws.sandbox
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Federated = format( "arn:aws:iam::224565186975:oidc-provider/%s",module.eks.oidc_provider)
+        }
+        "Condition": {
+                "StringEquals": {
+                    format("%s:aud",module.eks.oidc_provider): "sts.amazonaws.com",
+                    format("%s:sub",module.eks.oidc_provider): "system:serviceaccount:default:s3-access-podidentity",                    
+                }
+            }
+      }        
+      
+    ]
+  })
+
+}
+
 ///////////////////
 
 provider "kubernetes" {
