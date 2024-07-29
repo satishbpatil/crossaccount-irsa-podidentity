@@ -18,6 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "s3-access-app.name" . }}
     spec:
+      name: irsa-pod
       serviceAccountName: {{ include "s3-access-app.name" . }}
       containers:
       - name: aws-cli

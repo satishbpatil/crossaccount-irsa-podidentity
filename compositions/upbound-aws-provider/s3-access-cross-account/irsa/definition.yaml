@@ -8,7 +8,7 @@ metadata:
 spec:
   claimNames:
     kind: IRSACROSSACCOUNT
-    plural: irsas
+    plural: irsacrossaccounts
   group: awsblueprints.io
   names:
     kind: XIRSACROSSACCOUNT

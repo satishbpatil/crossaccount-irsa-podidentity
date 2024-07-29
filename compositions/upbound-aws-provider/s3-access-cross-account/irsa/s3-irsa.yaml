@@ -41,13 +41,16 @@ spec:
                   eks.amazonaws.com/role-arn: ""
       patches:
         - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig
+          toFieldPath: spec.resourceConfig      
+        - type: FromCompositeFieldPath
           fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.manifest.metadata.namespace
         - type: FromCompositeFieldPath
           fromFieldPath: spec.serviceAccountName
           toFieldPath: spec.forProvider.manifest.metadata.name
-        - type: FromCompositeFieldPath
-          fromFieldPath: status.roleArn
-          toFieldPath: spec.forProvider.manifest.metadata.annotations[eks.amazonaws.com/role-arn]
-          policy:
-            fromFieldPath: Required
+        # - type: FromCompositeFieldPath
+        #   fromFieldPath: status.roleArn
+        #   toFieldPath: spec.forProvider.manifest.metadata.annotations[eks.amazonaws.com/role-arn]
+          # policy:
+          #   fromFieldPath: Required

@@ -1,0 +1,12 @@
+apiVersion: awsblueprints.io/v1alpha1
+kind: IRSACROSSACCOUNT
+metadata:
+  name: s3-access-app
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  serviceAccountName: s3-access-app
+  writeConnectionSecretToRef:
+    name: s3-access-app
+  resourceConfig:
+    providerConfigName: aws-provider-config
